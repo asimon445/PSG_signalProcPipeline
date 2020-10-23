@@ -1,0 +1,135 @@
+from scipy.stats import zscore
+from scipy.signal import welch
+import yasa
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.signal as signal
+import seaborn as sns
+import pandas as pd
+sns.set(font_scale=1.2)
+import mne
+import glob
+from scipy.special import erf
+import datetime
+import csv
+import os
+
+PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/preprocessed/'
+
+#create list of PSG files
+FILES = glob.glob(PATH + '*.fif')
+FILES.sort()
+
+#create list of hypnogram files  
+HYPNO = glob.glob(PATH + '*.csv')
+HYPNO.sort()
+
+# this is for indexing the last '/' in the path so that we can pull the filename easily for each participant
+sep = '/'
+def find(PATH, sep):
+    return [i for i, ltr in enumerate(PATH) if ltr == sep]
+
+pathsep = list(find(PATH,sep))
+pathsep = pathsep[len(pathsep)-1]
+
+sf = 100.
+
+#format output header  -- one over f slope
+Stats = np.zeros((len(FILES),13),dtype=np.int)
+Stats = Stats.astype('U20')
+
+Stats[0,0] = 'Subject'
+Stats[0,1] = 'NREM F3 oof'
+Stats[0,2] = 'NREM F4 oof'
+Stats[0,3] = 'NREM C3 oof'
+Stats[0,4] = 'NREM C4 oof'
+Stats[0,5] = 'NREM O1 oof'
+Stats[0,6] = 'NREM O2 oof'
+Stats[0,7] = 'REM F3 oof'
+Stats[0,8] = 'REM F4 oof'
+Stats[0,9] = 'REM C3 oof'
+Stats[0,10] = 'REM C4 oof'
+Stats[0,11] = 'NREM O1 oof'
+Stats[0,12] = 'NREM O2 oof'
+
+
+
+
+
+
+PSPspec = np.zeros((22,201),dtype=np.str)
+PSPspec = PSPspec.astype('U20')
+
+Conspec = np.zeros((25,201),dtype=np.str)
+Conspec = Conspec.astype('U20')
+
+psp = 0
+con = 0
+
+diagnosis = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,0,0,2,0,2,2,0,0,0,0,0,2,2,2,1,1,0,2,2,0,0,2,2,2,2,0,2,0,0,2,2,0,2,2,2,1,1,2,2]
+
+
+for f, file in enumerate(FILES):
+            
+    if f != 47:
+        
+        PSG_fnum = FILES[f][np.s_[pathsep+1:pathsep+6]]
+        eeg = mne.io.read_raw_fif(FILES[f], preload=True)
+        data = eeg.get_data() 
+        data = data*1000000
+        
+        channels = eeg.ch_names
+
+        sf = 100.
+        times = np.arange(data.size) / sf
+
+        hypnogram = []
+        hypnogram = np.loadtxt(fname = HYPNO[f],dtype = 'str',delimiter = ',')  
+        hypnogram = hypnogram.astype('U3')
+
+        for r in range(len(hypnogram)):
+            if hypnogram[r] == '- 1':
+                hypnogram[r] = '-1'
+            elif hypnogram[r] == '2 1':
+                hypnogram[r] = '2'
+            elif hypnogram[r] == '-':
+                hypnogram[r] = '-1'
+
+        where_NREM = np.isin(hypnogram, ['2', '3'])  # True if sample is in N2 / N3, False otherwise
+        data_NREM = data[:, where_NREM] 
+
+        win = int(4 * sf)  # Window size is set to 4 seconds
+        freqs, psd = welch(data_NREM, sf, nperseg=win, average='median')  # Works with single or multi-channel data, freq bins are 0.25 Hz
+
+        xs = np.array(psd[0,:], dtype=np.float64)
+        ys = np.array(freqs, dtype=np.float64)
+
+        def best_fit_slope(xs,ys):
+            m = (((mean(xs)*mean(ys)) - mean(xs*ys)) /
+                 ((mean(xs)**2) - mean(xs**2)))
+            return m
+
+        m = best_fit_slope(xs,ys)
+        print(m)
+        
+        
+
+        if diagnosis[f] == 1:
+            Conspec[con] = (psd[0,:] + psd[1,:])/2
+            con = con+1
+        elif diagnosis[f] == 2:
+            PSPspec[psp] = (psd[0,:] + psd[1,:])/2
+            psp = psp+1
+                
+        where_REM = np.isin(hypnogram, ['4'])  # True if sample is in N2 / N3, False otherwise
+        data_REM = data[:, where_REM] 
+        
+        win = int(4 * sf)  # Window size is set to 4 seconds
+        freqs_rem, psd_rem = welch(data_REM, sf, nperseg=win, average='median')  # Works with single or multi-channel data, freq bins are 0.25 Hz
+        
+        
+        
+SpecPow_outfile = open('/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/' + '1 over f slope.csv','w')
+with SpecPow_outfile:
+    writer = csv.writer(SpecPow_outfile,delimiter=',')
+    writer.writerows(PowStats)

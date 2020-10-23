@@ -1,0 +1,43 @@
+PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Preprocessed/'
+
+#create list of PSG files
+FILES = glob.glob(PATH + '*.fif')
+FILES.sort()
+
+#create list of hypnogram files  
+HYPNO = glob.glob(PATH + '*.csv')
+HYPNO.sort()
+
+
+
+
+
+eeg = mne.io.read_raw_fif(FILES[f], preload=True)
+data = eeg.get_data() 
+data = data*1000000
+
+channels = eeg.ch_names
+
+sf = 100.
+times = np.arange(data.size) / sf
+
+hypnogram = []
+hypnogram = np.loadtxt(fname = HYPNO[f],dtype = 'str',delimiter = ',')  
+hypnogram = hypnogram.astype('U3')
+
+for r in range(len(hypnogram)):
+    if hypnogram[r] == '- 1':
+        hypnogram[r] = '-1'
+    elif hypnogram[r] == '2 1':
+        hypnogram[r] = '2'
+    elif hypnogram[r] == '-':
+        hypnogram[r] = '-1'
+
+
+
+sw = yasa.sw_detect(data, sf, ch_names=channels, hypno=hypnogram, include=(2,3))
+
+
+
+# Get the full detection dataframe
+sw.summary().round(2)
