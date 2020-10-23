@@ -1,3 +1,6 @@
+# This script computes summaries of each PT's hypnogram. E.g., 10 min awake, followed by 2 min stage 1, then 20 min stage 2, etc...
+# Good to have for sanity checks later on
+
 PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/preprocessed/'
 
 #create list of hypnogram files  

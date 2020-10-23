@@ -1,4 +1,4 @@
-
+#This will compute delta power changes in the NREM stages throughtout the course of the night. It concatenates all NREM stages and then fits a line to the resulting power vector. Not the ideal way to do this, but it's probably the most reasonable/easy way to do it in this PSP population
 
 from scipy.stats import zscore
 from scipy.signal import welch

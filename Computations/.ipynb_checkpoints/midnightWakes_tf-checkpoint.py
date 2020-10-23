@@ -1,3 +1,6 @@
+# this will compute TF spectrum from awakenings 
+# if it breaks, it's because that subject didn't ever fall asleep. Specify to skip them on line 205 (e.g., if (f != 41))
+
 from scipy.stats import zscore
 from scipy.signal import welch
 from scipy.stats import linregress

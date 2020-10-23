@@ -1,3 +1,23 @@
+# this will compute TF spectrum from 1st awakening
+# if it breaks, it's because that subject didn't ever fall asleep. Specify to skip them on line 205 (e.g., if (f != 41))
+
+from scipy.stats import zscore
+from scipy.signal import welch
+from scipy.stats import linregress
+import yasa
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.signal as signal
+import seaborn as sns
+import pandas as pd
+sns.set(font_scale=1.2)
+import mne
+import glob
+from scipy.special import erf
+import datetime
+import csv
+import os
+
 PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/preprocessed/'
 
 #create list of PSG files
