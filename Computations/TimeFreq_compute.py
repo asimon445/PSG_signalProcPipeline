@@ -17,7 +17,7 @@ import datetime
 import csv
 import os
 
-PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/preprocessed/'
+PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Preprocessed/'
 
 #create list of PSG files
 FILES = glob.glob(PATH + '*.fif')
@@ -103,7 +103,7 @@ PowStats[0,42] = 'O2 gamma'
 ## initialize for loop
 for f, file in enumerate(FILES):
 
-    if (f != 47) & (f != 61) & (f != 63):
+    if (f < 10000):    #unindent not working, too lazy to delete this
         PSG_fnum = FILES[f][np.s_[pathsep+1:pathsep+6]]
         Hyp_fnum= HYPNO[f][np.s_[pathsep+1:pathsep+6]]
 
@@ -121,7 +121,7 @@ for f, file in enumerate(FILES):
 
             hypnogram = []
             hypnogram = np.loadtxt(fname = HYPNO[f],dtype = 'str',delimiter = ',')  
-            hypnogram = hypnogram.astype('U3')
+#             hypnogram = hypnogram.astype('U3')
 
             for r in range(len(hypnogram)):
                 if hypnogram[r] == '- 1':
@@ -130,41 +130,43 @@ for f, file in enumerate(FILES):
                     hypnogram[r] = '2'
                 elif hypnogram[r] == '-':
                     hypnogram[r] = '-1'
+                elif hypnogram[r] == '0 . 0':
+                    hypnogram[r] = '0'
 
             frontocents = channels[0:4]
 
-                # Z-score the data
-            data_zscored = zscore(data)
+#                 # Z-score the data
+#             data_zscored = zscore(data)
 
-            sw = yasa.sw_detect(data_zscored[0:4,:], sf, ch_names=frontocents, hypno=hypnogram, include=(2,3),
-                            amp_neg=(1, None), 
-                            amp_pos=(1, None), 
-                            amp_ptp=(3, 10))
+#             sw = yasa.sw_detect(data_zscored[0:4,:], sf, ch_names=frontocents, hypno=hypnogram, include=(2,3),
+#                            amp_neg=(1, None), 
+#                            amp_pos=(1, None), 
+#                            amp_ptp=(3, 10))
 
-                #sw.summary().round(2)
+#                 #sw.summary().round(2)
 
-            summary_df = sw.summary(grp_chan=True, grp_stage=True, aggfunc='mean')
+#             summary_df = sw.summary(grp_chan=True, grp_stage=True, aggfunc='mean')
 
-                #pull SW density from stage 2 and 3 and store them
-            SWstats[f+1,0] = Hyp_fnum
-            SWstats[f+1,1] = summary_df.iloc[0,1]
-            SWstats[f+1,2] = summary_df.iloc[1,1]
-            SWstats[f+1,3] = summary_df.iloc[2,1]
-            SWstats[f+1,4] = summary_df.iloc[3,1]
+#                 #pull SW density from stage 2 and 3 and store them
+#             SWstats[f+1,0] = Hyp_fnum
+#             SWstats[f+1,1] = summary_df.iloc[0,1]
+#             SWstats[f+1,2] = summary_df.iloc[1,1]
+#             SWstats[f+1,3] = summary_df.iloc[2,1]
+#             SWstats[f+1,4] = summary_df.iloc[3,1]
 
-            try:
-                SWstats[f+1,5] = summary_df.iloc[4,1]
-                SWstats[f+1,6] = summary_df.iloc[5,1]
-                SWstats[f+1,7] = summary_df.iloc[6,1]
-                SWstats[f+1,8] = summary_df.iloc[7,1]
-            except:
-                SWstats[f+1,5] = 0
-                SWstats[f+1,6] = 0
-                SWstats[f+1,7] = 0
-                SWstats[f+1,8] = 0
+#             try:
+#                 SWstats[f+1,5] = summary_df.iloc[4,1]
+#                 SWstats[f+1,6] = summary_df.iloc[5,1]
+#                 SWstats[f+1,7] = summary_df.iloc[6,1]
+#                 SWstats[f+1,8] = summary_df.iloc[7,1]
+#             except:
+#                 SWstats[f+1,5] = 0
+#                 SWstats[f+1,6] = 0
+#                 SWstats[f+1,7] = 0
+#                 SWstats[f+1,8] = 0
 
             #compute band power
-            where_REM = np.isin(hypnogram, ['1','2','3','4'])  # True if sample is in N2 / N3, False otherwise
+            where_REM = np.isin(hypnogram, ['0'])  # True if sample is in N2 / N3, False otherwise
             data_REM = data[:, where_REM]        
 
             win = int(4 * sf)  # Window size is set to 4 seconds
@@ -237,7 +239,7 @@ for f, file in enumerate(FILES):
 #    writer.writerows(SWstats)
     
     
-SpecPow_outfile = open('/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/' + 'absolute N3 spectral stats.csv','w')
+SpecPow_outfile = open('/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Resting/preprocessed/EO_all_1p5_1p25_1p0_stdev/' + 'spectral stats.csv','w')
 with SpecPow_outfile:
     writer = csv.writer(SpecPow_outfile,delimiter=',')
     writer.writerows(PowStats)
@@ -276,21 +278,3 @@ with SpecPow_outfile:
 #plt.title('N3 sleep EEG data')
 #plt.legend()
 #sns.despine()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

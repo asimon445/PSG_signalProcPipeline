@@ -1,0 +1,15 @@
+import numpy as np
+import pandas as pd
+import mne
+import seaborn as sns
+from matplotlib import pyplot as plt
+import csv
+import os
+import datetime
+
+#let's just do one file at a time for this one 
+FILE = '/Users/ajsimon/Dropbox (Personal)/Data/multimodal biosensing/raw data/001_AJ_10_26_2020.csv'
+
+
+
+

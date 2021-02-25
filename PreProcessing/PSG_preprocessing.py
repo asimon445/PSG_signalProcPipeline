@@ -7,8 +7,7 @@
 # 3. rereference (to linked mastoids for now, can be changed)
 # 4. import hypnogram and upsample to equal the sampling rate of the eeg data. 
 # 5. the length of the hypnogram is matched to the length of the PSG data. 
-#  ******* IMPORTANT ********  Step #5 often does not work and will at some point require the user to visually inspect the data to be sure 
-#                              this was done properly
+#  ******* IMPORTANT ********  Step #5 often does not work and will at some point require the user to visually inspect the data to be sure this was done properly
 
 # 6. label artifacts using 'yasa.art_detect' and selecting the "covariance-based" parameter (portions of the hypnogram are labeled '-1' to denote a segment that contains artifact)
 #    THRESHOLD IS SET TO 3 ZSCORES FOR ART DETECTION -- THIS CAN BE CHANGED ON LINES 182 AND 187 (CHANGE IT ON BOTH IF YOU"RE GOING TO CHANGE IT AT ALL!!!!!!!!!!!!!!!!)
