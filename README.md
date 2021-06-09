@@ -18,4 +18,6 @@ The files in the subfolder '/Computations' are all devoted to computing summary 
 The stage that you want these scripts to compute statistics for can be specified in lines that look like this: where_during_sleep_wakes = np.isin(during_sleep_hypno, ['0']) 
 The stage can be changed by changing the '0' (which is wake) to '1', '2', '3', or '4' ('4' here is for REM). 
 
+The subfolder 'DataVisualization' has a few scripts in it, but really the only one that is important for the PSG sleep studies is the one called 'barGraphs_with_points'. This will make a bar graph with each individual data point overlayed on it. In order for this to work, you need to input the individual data values into the line 'y = np.array([([21.11,55.82,15.91,51.2,16.02,21.74,46.38]),np.array([35.67,103.51,25.34,99.91,21.52,37.66,89.34])])'. This example will yield 2 bars -- one with the first np array's data overlayed and the second with the second np array's data. This one can be a bit confusing for a novice with python because the number of elements in 'x' and 'colors' need to be the same as the number of arrays specified in 'y'.  
+
 Feel free to email me at asimon445@gmail.com or alexander.simon@ucsf.edu if you have any questions. 
