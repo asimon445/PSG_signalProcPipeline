@@ -38,7 +38,7 @@ pathsep = pathsep[len(pathsep)-1]
 
 sf = 100.
 
-#format output header  -- slow wave density
+#format output header  -- sprindles
 spindlestats = np.zeros((len(FILES)+1,41), dtype=np.int)
 spindlestats = spindlestats.astype('U20')
 

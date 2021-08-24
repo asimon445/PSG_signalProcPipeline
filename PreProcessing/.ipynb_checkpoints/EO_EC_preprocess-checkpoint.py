@@ -25,8 +25,8 @@ from scipy.special import erf
 import csv
 
 
-PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Resting/raw/90 Second EO preprocess 1 stdev/'
-OUTPATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Resting/preprocessed/EO_1p0stdev_reprocessed2/'
+PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Resting/raw/30-60 Second Eyes Closed_Reboot/'
+OUTPATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Resting/preprocessed/EC_2_stdev/'
 
 SUBDIRS = glob.glob(PATH + '/*/')   #list subdirectories
 SUBDIRS.sort()
@@ -39,7 +39,7 @@ failures = []   #stores list of edfs without a hypnogram on trials with sleep
 artifact = []
 subs = []
 
-thresh = 1.0   #this is the z-score value that we are using to detect artifacts. 
+thresh = 2.0   #this is the z-score value that we are using to detect artifacts. 
 
 #for s in range(len(SUBDIRS)):
 #
@@ -54,7 +54,7 @@ pathsep = pathseps[len(pathseps)-1]   #this here is the position of the final '/
     
     # generate lists of .edf and .xls files
 #    edfs = glob.glob(currdir + '*.edf')
-edfs = glob.glob(PATH + '*.edf')
+edfs = glob.glob(PATH + '*/*.edf')
 edfs.sort()
     
 xlss = glob.glob(currdir + '*.csv')
@@ -155,14 +155,14 @@ for f in range(len(edfs)):
 #save artifact info
 art_output = np.vstack((subs,artifact))
 
-art_outfile = open(OUTPATH + 'artifact_rejection_info_1_point_0.csv','w')
+art_outfile = open(OUTPATH + 'artifact_rejection_info_2_point_0.csv','w')
 with art_outfile:
     writer = csv.writer(art_outfile,delimiter=' ')
     writer.writerows(art_output)
 
 
 #save failures
-fails_outfile = open(OUTPATH + 'failures_info_1_point_0.csv','w')
+fails_outfile = open(OUTPATH + 'failures_info_2_point_0.csv','w')
 with fails_outfile:
     writer = csv.writer(fails_outfile,delimiter=' ')
     writer.writerows(failures)

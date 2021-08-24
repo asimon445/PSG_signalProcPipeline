@@ -15,7 +15,7 @@ import seaborn as sns
 import pandas as pd
 sns.set(font_scale=1.2)
 
-PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/MSLT/preprocessed_1sec_windows_1point5/'
+PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Resting/preprocessed/EC_1p5_stdev_new/'
 
 TFcompute = True   #compute time-freq stats
 

@@ -29,8 +29,8 @@ from scipy.special import erf
 import csv
 
 
-PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/MSLT/raw/'
-OUTPATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/MSLT/preprocessed_1sec_windows_1point5_2/'
+PATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Resting/raw/30-60 Second Eyes Closed_Reboot/'
+OUTPATH = '/Users/ajsimon/Dropbox (Personal)/Data/Overnight PSG/data/Resting/preprocessed/EC_2_stdev/'
 
 SUBDIRS = glob.glob(PATH + '/*/')   #list subdirectories
 SUBDIRS.sort()
@@ -43,7 +43,7 @@ failures = []   #stores list of edfs without a hypnogram on trials with sleep
 artifact = []
 subs = []
 
-thresh = 1.5   #this is the z-score value that we are using to detect artifacts. Default is 3, but after visually inspecting preprocessed data, it can/should be changed for files that need a different threshold. Just be sure to delete those files from the preprocessed folder before trying to run this again with a different threshold, otherwise they'll be skipped!
+thresh = 2.0   #this is the z-score value that we are using to detect artifacts. Default is 3, but after visually inspecting preprocessed data, it can/should be changed for files that need a different threshold. Just be sure to delete those files from the preprocessed folder before trying to run this again with a different threshold, otherwise they'll be skipped!
 
 for s in range(len(SUBDIRS)):
 
@@ -381,14 +381,14 @@ for s in range(len(SUBDIRS)):
 #save artifact info
 art_output = np.vstack((subs,artifact))
 
-art_outfile = open(OUTPATH + 'artifact_rejection_info_2_point_5.csv','w')
+art_outfile = open(OUTPATH + 'artifact_rejection_info_2.csv','w')
 with art_outfile:
     writer = csv.writer(art_outfile,delimiter=' ')
     writer.writerows(art_output)
 
 
 #save failures
-fails_outfile = open(OUTPATH + 'failures_info_2_point_5.csv','w')
+fails_outfile = open(OUTPATH + 'failures_info_2.csv','w')
 with fails_outfile:
     writer = csv.writer(fails_outfile,delimiter=' ')
     writer.writerows(failures)
